@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <ui:insert name="head"/>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        hr { border: 1px solid #ccc; margin: 20px 0; }
+        .logo {
+            float: right;
+            margin: 0 0 20px 20px;
+            max-width: 150px;
+            height: auto;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:graphicImage library="imagens" name="CadFunc.png" styleClass="logo"/>
+    <h1>Cadastro de Funcionários</h1>
+    <hr/>
+    <ui:insert name="content"/>
+    <hr/>
+    <footer>
+        <p>Avenida Misael Eufrásio Leal, 347 - Jd. América - CEP: 18705-050</p>
+        <p>Fone/Fax: (14) 3733-8585 / 3732-1750 - Avaré/SP</p>
+    </footer>
+</h:body>
+</html>

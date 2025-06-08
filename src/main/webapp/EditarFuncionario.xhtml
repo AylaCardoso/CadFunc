@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<ui:composition template="/WEB-INF/Layout.xhtml">
+    <f:metadata>
+        <f:viewParam name="id" value="#{funcionarioMBean.funcionario.id}" />
+        <f:event type="preRenderView" listener="#{funcionarioMBean.verificaRedirecionamento}" />
+    </f:metadata>
+
+    <ui:define name="head">
+        <title>Editar Funcionário</title>
+        <style>
+            body {
+                background: #f8f9fa;
+            }
+            .form-container {
+                max-width: 800px;
+                margin: 2rem auto;
+                padding: 2rem;
+                background: #fff;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(44,62,80,0.10);
+            }
+            .form-row {
+                display: flex;
+                gap: 2rem;
+                margin-bottom: 1.5rem;
+                flex-wrap: wrap;
+            }
+            .form-group {
+                flex: 1;
+                min-width: 220px;
+                margin-bottom: 1rem;
+            }
+            .form-label {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+                display: block;
+                color: #2c3e50;
+            }
+            .form-control,
+            .form-select {
+                width: 100%;
+                padding: 0.75rem;
+                border: 2px solid #e0e0e0;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border-color 0.3s;
+                background: #fafbfc;
+            }
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #3498db;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(52,152,219,0.08);
+            }
+            .is-invalid {
+                border-color: #e74c3c !important;
+            }
+            .invalid-feedback {
+                color: #e74c3c;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+                display: block;
+            }
+            .form-hint,
+            .text-muted {
+                color: #7f8c8d;
+                font-size: 0.875rem;
+                margin-top: 0.25rem;
+                display: block;
+            }
+            .form-check {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            .form-check-input {
+                width: 20px;
+                height: 20px;
+                accent-color: #3498db;
+            }
+            .form-check-label {
+                font-size: 1rem;
+                color: #2c3e50;
+            }
+            .form-control-file,
+            input[type="file"].form-control {
+                display: block;
+                width: 100%;
+                padding: 0.5rem 0.75rem;
+                font-size: 1rem;
+                color: #495057;
+                background-color: #fff;
+                border: 2px solid #e0e0e0;
+                border-radius: 6px;
+                transition: border-color 0.3s;
+                margin-top: 0.2rem;
+                cursor: pointer;
+            }
+            .form-control-file:focus,
+            input[type="file"].form-control:focus {
+                border-color: #3498db;
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(52,152,219,0.10);
+            }
+            input[type="file"]::-webkit-file-upload-button {
+                background: #3498db;
+                color: #fff;
+                border: none;
+                border-radius: 6px;
+                padding: 0.5rem 1.2rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.3s;
+                margin-right: 1rem;
+            }
+            input[type="file"]:hover::-webkit-file-upload-button {
+                background: #2980b9;
+            }
+            input[type="file"]::file-selector-button {
+                background: #3498db;
+                color: #fff;
+                border: none;
+                border-radius: 6px;
+                padding: 0.5rem 1.2rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.3s;
+                margin-right: 1rem;
+            }
+            input[type="file"]:hover::file-selector-button {
+                background: #2980b9;
+            }
+            .foto-preview {
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 2px solid #dee2e6;
+                margin-top: 0.5rem;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+                display: block;
+            }
+            .current-photo {
+                margin-top: 1.5rem;
+                padding: 0.75rem 0.5rem 0.5rem 0.5rem;
+                background: #f8f9fa;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .current-photo-label {
+                font-weight: 600;
+                color: #2c3e50;
+                margin-bottom: 0.7rem;
+                font-size: 1rem;
+                letter-spacing: 0.2px;
+                display: block;
+            }
+            .form-buttons {
+                margin-top: 2rem;
+                display: flex;
+                gap: 1rem;
+                justify-content: flex-end;
+            }
+            .btn {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            .btn-primary {
+                background-color: #3498db;
+                color: white;
+            }
+            .btn-primary:hover {
+                background-color: #2980b9;
+                box-shadow: 0 3px 8px rgba(44,62,80,0.12);
+            }
+            .btn-outline-secondary {
+                background: transparent;
+                color: #2c3e50;
+                border: 2px solid #95a5a6;
+            }
+            .btn-outline-secondary:hover {
+                background: #e6e9ed;
+                color: #2c3e50;
+                border-color: #7f8c8d;
+            }
+            @media (max-width: 900px) {
+                .form-row {
+                    gap: 1rem;
+                }
+            }
+            @media (max-width: 600px) {
+                .form-container {
+                    padding: 1rem;
+                }
+                .form-row {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+                .form-buttons {
+                    flex-direction: column;
+                    gap: 0.5rem;
+                    align-items: stretch;
+                }
+            }
+        </style>
+        <script type="text/javascript">
+            function previewFoto(event) {
+                var input = event.target;
+                var preview = document.getElementById('fotoPreview');
+                if (input.files &amp;&amp; input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+                    preview.style.display = 'none';
+                }
+            }
+        </script>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="form-container">
+            <h1 class="mb-4">Editar Funcionário - #{funcionarioMBean.funcionario.nome}</h1>
+
+            <h:messages id="globalMessages"
+                        globalOnly="true"
+                        styleClass="mb-4"
+                        errorClass="alert alert-danger"
+                        infoClass="alert alert-success"/>
+
+            <h:form id="formEdicao" enctype="multipart/form-data">
+                <div class="form-row">
+                    <!-- Nome -->
+                    <div class="form-group mb-3">
+                        <h:outputLabel for="nome" value="Nome Completo" styleClass="form-label"/>
+                        <h:inputText id="nome"
+                                     value="#{funcionarioMBean.funcionario.nome}"
+                                     required="true"
+                                     requiredMessage="Nome obrigatório"
+                                     styleClass="form-control #{component.valid ? '' : 'is-invalid'}"/>
+                        <h:message for="nome" styleClass="invalid-feedback"/>
+                    </div>
+
+                    <!-- Cargo -->
+                    <div class="form-group mb-3">
+                        <h:outputLabel for="cargo" value="Cargo" styleClass="form-label"/>
+                        <h:selectOneMenu id="cargo"
+                                         value="#{funcionarioMBean.funcionario.cargo}"
+                                         required="true"
+                                         requiredMessage="Selecione um cargo"
+                                         styleClass="form-select #{component.valid ? '' : 'is-invalid'}">
+                            <f:selectItem itemLabel="Selecione..." noSelectionOption="true"/>
+                            <f:selectItems value="#{cargoMBean.cargos}" var="cargo"
+                                           itemLabel="#{cargo}" itemValue="#{cargo}"/>
+                        </h:selectOneMenu>
+                        <h:message for="cargo" styleClass="invalid-feedback"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- Salário -->
+                    <div class="form-group mb-3">
+                        <h:outputLabel for="salario" value="Salário (R$)" styleClass="form-label"/>
+                        <h:inputText id="salario"
+                                     value="#{funcionarioMBean.funcionario.salario}"
+                                     required="true"
+                                     requiredMessage="Salário obrigatório"
+                                     styleClass="form-control #{component.valid ? '' : 'is-invalid'}"
+                                     placeholder="Ex: 3500,50">
+                            <f:convertNumber locale="pt_BR"
+                                             type="number"
+                                             integerOnly="false"
+                                             minFractionDigits="0"
+                                             maxFractionDigits="2"/>
+                        </h:inputText>
+                        <h:message for="salario" styleClass="invalid-feedback"/>
+                        <small class="form-text text-muted">Digite apenas números (Ex: 3500 ou 3500,50)</small>
+                    </div>
+
+                    <!-- Data de Admissão -->
+                    <div class="form-group mb-3">
+                        <h:outputLabel for="dataAdm" value="Data de Admissão" styleClass="form-label"/>
+                        <h:inputText id="dataAdm"
+                                     value="#{funcionarioMBean.funcionario.dataAdm}"
+                                     required="true"
+                                     requiredMessage="Data obrigatória"
+                                     styleClass="form-control #{component.valid ? '' : 'is-invalid'}"
+                                     placeholder="dd/MM/yyyy">
+                            <f:convertDateTime pattern="dd/MM/yyyy" locale="pt_BR"/>
+                        </h:inputText>
+                        <h:message for="dataAdm" styleClass="invalid-feedback"/>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- Status -->
+                    <div class="form-group mb-3">
+                        <div class="form-check form-switch">
+                            <h:selectBooleanCheckbox id="ativo"
+                                                     value="#{funcionarioMBean.funcionario.ativo}"
+                                                     styleClass="form-check-input"/>
+                            <label class="form-check-label" for="ativo">Ativo</label>
+                        </div>
+                    </div>
+
+                    <!-- Upload de Foto -->
+                    <div class="form-group mb-4">
+                        <h:outputLabel for="foto" value="Atualizar Foto" styleClass="form-label"/>
+                        <input type="file" id="foto" name="foto"
+                               accept="image/jpeg, image/png"
+                               class="form-control"
+                               onchange="previewFoto(event)" />
+                        <small class="text-muted">Formatos aceitos: JPG/PNG (max 2MB)</small>
+                        <h:message for="foto" styleClass="invalid-feedback"/>
+
+                        <div class="current-photo">
+                            <span class="current-photo-label">Pré-visualização</span>
+                            <!-- Preview dinâmico da nova foto -->
+                            <img id="fotoPreview" class="foto-preview"
+                                 src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=="
+                                 style="display:none;" alt="Pré-visualização da foto"/>
+                            <!-- Foto atual do banco, se não houver preview novo -->
+                            <h:graphicImage
+                                    value="#{empty funcionarioMBean.funcionario.fotoPath ? '/imagem-padrao' : funcionarioMBean.funcionario.fotoWebPath}"
+                                    styleClass="foto-preview"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="form-buttons mt-4">
+                    <h:commandButton value="Salvar Alterações"
+                                     action="#{funcionarioMBean.editarExistente}"
+                                     styleClass="btn btn-primary"
+                                     update="globalMessages @form"/>
+
+                    <h:button value="Cancelar"
+                              outcome="ListaFuncionarios.xhtml?faces-redirect=true"
+                              styleClass="btn btn-outline-secondary"/>
+                </div>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>
+</html>
